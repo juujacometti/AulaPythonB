@@ -93,7 +93,7 @@ def ver_valor_caixa():
     print(f"\n💰 Valor atual em caixa: R${valor_caixa[0]:.2f}")
 
 
-# Loop do menu principal
+# Menu principal
 def menu():
     while True:
         print("\n----- Menu da Loja de Jogos -----")
@@ -119,6 +119,4 @@ def menu():
         else:
             print("Opção inválida. Tente novamente.")
 
-
-# Executa o sistema
 menu()

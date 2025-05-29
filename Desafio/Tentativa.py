@@ -141,12 +141,12 @@ def lista_jogos_disponiveis():
     label_disponivel_nba = tk.Label(janela, text="NBA 2k25", font=("Arial", 12))
     label_disponivel_nba.grid(row=4, column=1)
 
-# def resumo_loja():
-#     label_resumo_loja = tk.Label(janela, text="Resumo da loja", font=("Arial", 14, "bold"))
-#     label_resumo_loja.grid(row=0, column=1, padx=10)
-#
-#     label_valor_caixa = tk.Label(janela, text=(f"Valor em caixa: {valor_caixa}" ), font=("Arial", 12))
-#     label_valor_caixa.grid(row=1, column=1, padx=10)
+def resumo_loja():
+    label_resumo_loja = tk.Label(janela, text="Resumo da loja", font=("Arial", 14, "bold"))
+    label_resumo_loja.grid(row=0, column=1, padx=10)
+
+    label_valor_caixa = tk.Label(janela, text=(f"Valor em caixa: {valor_caixa}" ), font=("Arial", 12))
+    label_valor_caixa.grid(row=1, column=1, padx=10)
 
 
 # Criação das listas

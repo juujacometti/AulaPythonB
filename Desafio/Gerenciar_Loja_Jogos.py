@@ -1,4 +1,5 @@
-import y as tk
+import tkinter as tk
+from tkinter import messagebox # Pop up de confirmação/erro
 
 '''Criar um sistema de comando de uma loja de jogos. 
 * O programa deve conter pelo menos 6 listas: quais jogos estão disponíveis para venda, preço de cada jogo, quantidade de jogos disponíveis para venda na loja, preço de fábrica dos jogos para aumentar o 
@@ -8,36 +9,6 @@ estoque, registro de vendas e registro de compras de estoque.
 * Ao sair, indique que o caixa está fechado. O usuário deve controlar o sistema da loja, registrando as vendas e as compras de estoque, sem esquecer de alterar os valores da lista de quantidade. 
 '''
 
-def entrar_sistema():
-    while True:
-        mensagem = tk.Label()
-        mensagem.config(janela, text="🕹️ Menu PlayOn 🕹️", font=("Arial", 16, "bold"))
-
-        label = tk.Label(janela, text="🕹️ Menu PlayOn 🕹️", font=("Arial", 16, "bold"))
-        label.grid(row=1, column=0, columnspan=2)
-        print("\n----- Menu da Loja de Jogos -----")
-        print("1. Registrar venda")
-        print("2. Registrar compra de estoque")
-        print("3. Resumo da loja")
-        print("4. Ver valor em caixa")
-        print("5. Sair")
-
-        opcao = input("Escolha uma opção: ")
-
-        # if opcao == '1':
-        #     registrar_venda()
-        # elif opcao == '2':
-        #     registrar_compra()
-        # elif opcao == '3':
-        #     resumo_loja()
-        # elif opcao == '4':
-        #     ver_valor_caixa()
-        # elif opcao == '5':
-        #     print("\nCaixa fechado. Encerrando o sistema.")
-        #     break
-        # else:
-        #     print("Opção inválida. Tente novamente.")
-
 # Criação das listas
 jogos_disponiveis = ["Forza Horizon 5", "Minecraft", "Stardew Valley", "Call of Duty", "NBA 2k25"]
 preco_jogos = [250.00, 100.00, 15.00, 184.00, 70.00]
@@ -45,30 +16,141 @@ quantidade_jogos_disponiveis = [20, 20, 20, 20, 20]
 preco_fabrica_jogos = [125.00, 50.00, 7.50, 92.00, 35.00]
 vendas = []
 compras_estoque = []
-formas_pagamento = ["debito", "credito", "pix"]
 valor_caixa = 0.0
 
-# Iniciando 
+# Funções 
+def registrar_venda():
+    janela_venda = tk.Toplevel()
+    janela_venda.title("Registrar venda")
+
+    tk.Label(janela_venda, text="Selecione o jogo vendido:").pack(pady=10)
+
+    for i in range(len(jogos_disponiveis)):
+        frame = tk.Frame(janela_venda)
+        frame.pack(pady=5)
+
+        texto = f"{jogos_disponiveis[i]} - R${preco_jogos[i]:.2f} - Estoque: {quantidade_jogos_disponiveis[i]}"
+        tk.Label(frame, text=texto).grid(row=0, column=0, padx=5)
+
+        tk.Label(frame, text="Qtd:").grid(row=0, column=1)
+        quantidade_entry = tk.Entry(frame, width=5)
+        quantidade_entry.grid(row=0, column=2, padx=5)
+
+        botao = tk.Button(frame, text="Vender",
+                          command=lambda i=i, q=quantidade_entry: efetuar_venda(i, janela_venda, q))
+        botao.grid(row=0, column=3, padx=5)
+
+# Função criada para contabilizar a quantidade de produtos inserida pelo usuário da função realizar_venda 
+def efetuar_venda(index, janela_venda, quantidade_entry):
+    global valor_caixa  # Atualizar o valor do caixa
+
+    try:
+        quantidade = int(quantidade_entry.get())
+        if quantidade <= 0:
+            messagebox.showerror("Erro", "Quantidade inválida.") # Erro para caso a quantidade informada seja menot que zero
+            return
+        if quantidade > quantidade_jogos_disponiveis[index]:
+            messagebox.showerror("Erro", "Estoque insuficiente.") # Erro para caso a quantidade informada não possua estoque suficiete
+            return
+
+        total = quantidade * preco_jogos[index]
+        quantidade_jogos_disponiveis[index] -= quantidade
+        vendas.append((jogos_disponiveis[index], quantidade, total))
+        valor_caixa += total
+
+        messagebox.showinfo("Sucesso", f"Realizada a venda de {quantidade} unidade(s) de '{jogos_disponiveis[index]}'") 
+        janela_venda.destroy()
+
+    except ValueError:
+        messagebox.showerror("Erro", "Por favor, insira um valor válido.")
+
+def compra_estoque():
+    janela_compra = tk.Toplevel()
+    janela_compra.title("Abastecer estoque")
+
+    tk.Label(janela_compra, text="Selecione o jogo que deseja comprar:").pack(pady=10)
+
+    for i in range(len(jogos_disponiveis)):
+        frame = tk.Frame(janela_compra)
+        frame.pack(pady=5)
+
+        texto = f"{jogos_disponiveis[i]} - R${preco_fabrica_jogos[i]:.2f} - Estoque: {quantidade_jogos_disponiveis[i]}"
+        tk.Label(frame, text=texto).grid(row=0, column=0, padx=5)
+
+        tk.Label(frame, text="Qtd:").grid(row=0, column=1)
+        quantidade_entry = tk.Entry(frame, width=5)
+        quantidade_entry.grid(row=0, column=2, padx=5)
+
+        botao = tk.Button(frame, text="Comprar",command=lambda i=i, q=quantidade_entry: efetuar_compra(i, janela_compra, q))
+        botao.grid(row=0, column=3, padx=5)
+        
+def efetuar_compra(index, janela_compra, quantidade_entry):
+    global valor_caixa
+
+    try:
+        quantidade = int(quantidade_entry.get())
+        if quantidade <= 0:
+            messagebox.showerror("Erro", "Quantidade inválida.")
+            return
+
+        custo_total = quantidade * preco_fabrica_jogos[index]
+        if valor_caixa < custo_total:
+            messagebox.showerror("Erro", "Saldo insuficiente.")
+            return
+
+        quantidade_jogos_disponiveis[index] += quantidade
+        valor_caixa -= custo_total
+        compras_estoque.append((jogos_disponiveis[index], quantidade, custo_total))
+
+        messagebox.showinfo("Sucesso", f"{quantidade} unidade(s) de '{jogos_disponiveis[index]}' comprada(s)!")
+        janela_compra.destroy()
+
+    except ValueError:
+        messagebox.showerror("Erro", "Por favor, insira um número válido.")
+
+def resumo_playon():
+    janela_resumo = tk.Toplevel()
+    janela_resumo.title("Resumo - PlayOn")
+    
+    # Exibe a quantidade disponível em estoque 
+    tk.Label(janela_resumo, text="******** ESTOQUE DISPONÍVEL ******** ").pack(pady=5)
+    for i in range(len(jogos_disponiveis)):
+        texto = f"{jogos_disponiveis[i]} | R${preco_jogos[i]:.2f} | Quantidade: {quantidade_jogos_disponiveis[i]}"
+        tk.Label(janela_resumo, text=texto).pack()
+        
+    # Exibe o valor que foi lucrado com vendas 
+    tk.Label(janela_resumo, text="\n******** VENDAS ********").pack(pady=5)
+    total_vendas = sum(venda[2] for venda in vendas)  # Soma os valores em reais
+    for venda in vendas:
+        tk.Label(janela_resumo, text=f"{venda[0]} - {venda[1]}x - R${venda[2]:.2f}").pack()  # Mostra nome, qtd, valor
+    tk.Label(janela_resumo, text=f"Ganhos com vendas: R${total_vendas:.2f}").pack()
+    
+    # Exibe o valor que foi gasto com estoque
+    tk.Label(janela_resumo, text="\n******** COMPRAS ********").pack(pady=5)
+    total_despesas = sum(compra[2] for compra in compras_estoque)
+    for compra in compras_estoque:
+        tk.Label(janela_resumo, text=f"{compra[1]}x {compra[0]} - R${compra[2]:.2f}").pack()
+    tk.Label(janela_resumo, text=f"Total em compras: R${total_despesas:.2f}").pack()
+    
+    # Exibe o saldo geral (vendas - compras)
+    tk.Label(janela_resumo, text="\n******** SALDO ATUAL ********").pack(pady=5)   
+    tk.Label(janela_resumo, text=f"\nR${valor_caixa:.2f}").pack()
+
+
 # Janela principal
-janela = tk.Tk()
-janela.title("Loja de jogos")
-janela.geometry("1000x500+500+250") # Largura, altura, distância da parte esquerda da tela, distante da parte superior da tela
-janela.grid_rowconfigure(0, weight=1)  # Espaço antes do título
-janela.grid_rowconfigure(1, weight=1)  # Linha do título
-janela.grid_rowconfigure(2, weight=1)  # Linha dos botões
-janela.grid_rowconfigure(3, weight=1)  # Espaço depois dos botões
-janela.grid_columnconfigure(0, weight=1)
-janela.grid_columnconfigure(1, weight=1)
+janela_principal = tk.Tk() # Criação de janela inicial
+janela_principal.title("Gerenciamento PlayOn") # Título da janela
+janela_principal.geometry("800x500+280+150") #Largura, altura, distância da parte esquerda da tela, distante da parte superior da tela
 
-label = tk.Label(janela, text="Bem vindo(a) à PlayOn!", font=("Arial", 16, "bold"))
-label.grid(row=1, column=0, columnspan=2)
+tk.Label(janela_principal, text="Bem vindo(a) à PlayOn!", font=("Arial", 16, "bold")).pack(pady=20) # Titulo janela inicial
 
-btn_entrar = tk.Button(janela, text="Entrar", width=15, height=2, font=("Arial", 10), command=entrar_sistema)
-btn_fechar = tk.Button(janela, text="Fechar", width=15, height=2, font=("Arial", 10),command=janela.destroy)
+frame_menu = tk.Frame(janela_principal) # Para organizar widgets
+frame_menu.pack() # Ocupar espaço disponível
 
-btn_entrar.grid(row=2, column=0, pady=10)
-btn_fechar.grid(row=2, column=1, pady=10)
+# Cria e inserie os bptões na tela
+tk.Button(frame_menu, text="Registrar Venda", width=20, height=2, command=registrar_venda).grid(row=0, column=0, padx=10, pady=10) 
+tk.Button(frame_menu, text="Compra de Estoque", width=20, height=2, command=compra_estoque).grid(row=0, column=1, padx=10, pady=10)
+tk.Button(frame_menu, text="Resumo da Loja", width=20, height=2, command=resumo_playon).grid(row=1, column=0, padx=10, pady=10)
+tk.Button(frame_menu, text="Sair", width=20, height=2, command=janela_principal.destroy).grid(row=1, column=1, padx=10, pady=10)
 
-janela.mainloop()
-    
-    
+janela_principal.mainloop() # Inicia a janela
