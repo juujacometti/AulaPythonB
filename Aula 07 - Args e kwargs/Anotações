@@ -1,0 +1,35 @@
+Args e kwargs são usados para passar um número variável de algumentos para uma função.
+
+====
+Args: tupla que permite passar um número variável de argumentos posicionais para uma função. Permite passar uma
+quantidade variada de argumentos, como por exemplo em uma conta, onde é possíovel passar dois ou mais argumentos.
+
+    Código exemplo:
+        def minha_função(*args):
+            for arg in args:
+                print(arg)
+
+        minha_funcao(1, 2, 3)
+
+Quando queremos passar parâmetros para uma função, porém não sabemos quantos argumentos serão passados, utilizamos
+o args.
+
+====
+Kwargs: um dicionário que permite passar um número variável de argumentos nomeados para uma função. Permite que
+ela receba qualquer quantidade de argumentos nomeados na forma 'chave = valor'.
+
+    Código exemplo:
+        def minha_funcao(**kwargs):
+            for chave, valor in kwargs.items():
+                print(F"{chave}: {valor}")
+
+        minha_funcao(nome = 'João', idade = 30, cidade = 'São Paulo')
+
+Quando queremos passar argumentos nomeados opcionais, que variam de chamada para chamada, utilizamos o kwargs.
+
+====
+Obseevações:
+    * Quando criamos um dicionário e não utilizamos o kwargs como parâmetro, os nomes das chaves devem ser iguais aos
+      nomes do parâmetros das funções.
+    * Ordem de utilização: def função(obrigatórios, *args, default, **kwargs).
+        - Os parâmetros fixos tem que vir depois dos argumentos.
