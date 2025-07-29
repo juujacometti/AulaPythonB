@@ -1,0 +1,1 @@
+# Escreva uma função chamada "imprimir_triângulo" que imprime um triângulo formado por asteriscos
