@@ -7,3 +7,16 @@ Pedir ao usuário se houve trapaça:
     - se houve: pedir ao usuário quem trapaceou e quem foi prejudicado. Depois, trocá-los de posições.
 Por fim, apresentar a classificação final.
 '''
+
+def ordem_corredores(**kwargs):
+    primeiro = input("Informe o primeiro colocado: ")
+    segundo = input("Informe o segundo colocado: ")
+    terceiro = input("Informe o terceiro colocado: ")
+
+    posicoes = {"quarto": "", "quinto": "", "sexto": ""}
+
+    return
+
+print("=== CORRIDA ‍🏃‍➡️ ️\nParticipantes:\n1 - Mercúrio (MC)\n2 - Papa-Léguas (PL)\n3 - Sonic (SN)\n4 - Flash (FS)\n5 - Ligeirinho (LG)\n6 - Super Homem (SH)\n")
+
+ordem_corredores()
